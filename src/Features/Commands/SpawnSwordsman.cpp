@@ -1,7 +1,10 @@
 #include "SpawnSwordsman.hpp"
 
 #include <Core/Actions/ActionSelector.hpp>
-#include <Core/Actions/DamageAction.hpp>
+#include <Core/Actions/UnitQueryAction.hpp>
+#include <Core/Actions/RandomFilterAction.hpp>
+#include <Core/Actions/HitAction.hpp>
+#include <Core/Actions/ContextActionSequence.hpp>
 #include <Core/Actions/MoveAction.hpp>
 #include <Core/Providers/ConstStatProvider.hpp>
 #include <Core/Providers/UnitStatProvider.hpp>
@@ -26,15 +29,15 @@ namespace sw::features
 		unit.stats.insert({"Strength", data.strength});
 
 		unit.behaviour = std::make_unique<core::ActionSelector>(
-			std::make_unique<core::DamageAction>(
-				"CRUSHING_BLOW",
-				std::make_unique<core::UnitStatProvider>("Health"),
-				std::make_unique<core::UnitStatProvider>("Strength"),
-				std::make_unique<core::ConstStatProvider>(1),
-				std::make_unique<core::ConstStatProvider>(1),
-				false),
-			std::make_unique<core::MoveAction>()
-		);
+			std::make_unique<core::ContextActionSequence<std::vector<uint32_t>>>(
+				std::make_unique<core::UnitQueryAction>(
+					std::make_unique<core::ConstStatProvider>(1), std::make_unique<core::ConstStatProvider>(1), false),
+				std::make_unique<core::RandomFilterAction>(),
+				std::make_unique<core::HitAction>(
+					"CRUSHING_BLOW",
+					std::make_unique<core::UnitStatProvider>("Health"),
+					std::make_unique<core::UnitStatProvider>("Strength"))),
+			std::make_unique<core::MoveAction>());
 
 		return [unit](core::World& world)
 		{
