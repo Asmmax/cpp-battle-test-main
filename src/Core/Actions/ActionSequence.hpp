@@ -2,13 +2,16 @@
 
 #include "AActionGroup.hpp"
 
+#include <memory>
+#include <vector>
+
 namespace sw::core
 {
-	class ActionSelector : public AActionGroup
+	class ActionSequence : public AActionGroup
 	{
 	public:
 		template <typename... Args>
-		ActionSelector(Args&&... nodes) :
+		ActionSequence(Args&&... nodes) :
 				AActionGroup(std::forward<Args>(nodes), ...)
 		{}
 
