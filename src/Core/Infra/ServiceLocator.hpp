@@ -8,25 +8,25 @@ namespace sw::core
 	class ServiceLocator
 	{
 	public:
-		template <typename ServiceType>
-		static void set(std::unique_ptr<ServiceType> service)
+		template <typename TService>
+		static void set(std::unique_ptr<TService> service)
 		{
-			getStorage<ServiceType>() = std::move(service);
+			getStorage<TService>() = std::move(service);
 		}
 
-		template <typename ServiceType>
-		static ServiceType& get()
+		template <typename TService>
+		static TService& get()
 		{
-			ServiceType* ptr = getStorage<ServiceType>().get();
+			TService* ptr = getStorage<TService>().get();
 			assert(ptr && "Service was not registered");
 			return *ptr;
 		}
 
 	private:
-		template <typename ServiceType>
-		static std::unique_ptr<ServiceType>& getStorage()
+		template <typename TService>
+		static std::unique_ptr<TService>& getStorage()
 		{
-			static std::unique_ptr<ServiceType> storage = nullptr;
+			static std::unique_ptr<TService> storage{};
 			return storage;
 		}
 	};

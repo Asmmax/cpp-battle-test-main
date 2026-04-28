@@ -1,9 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <cstdint>
 
 namespace sw::core
 {
@@ -14,9 +14,9 @@ namespace sw::core
 	class SpatialSystem
 	{
 	private:
-		std::unordered_map<uint32_t, uint32_t> _distOffset;
-		std::unordered_set<uint32_t> _flyingUnits;
-		std::unordered_set<uint32_t> _hiddenUnits;
+		std::unordered_map<uint32_t, uint32_t> _distOffset{};
+		std::unordered_set<uint32_t> _flyingUnits{};
+		std::unordered_set<uint32_t> _hiddenUnits{};
 
 	public:
 		std::vector<uint32_t> findUnitsInPoint(World& world, const Position& point, bool withFlying = false);

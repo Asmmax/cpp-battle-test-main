@@ -6,8 +6,8 @@ namespace sw::core
 {
 	struct Position
 	{
-		uint32_t x{0};
-		uint32_t y{0};
+		uint32_t x{};
+		uint32_t y{};
 
 		bool operator==(const Position& other) const
 		{

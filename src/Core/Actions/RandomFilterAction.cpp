@@ -1,9 +1,9 @@
 #include "RandomFilterAction.hpp"
 
+#include "Core/Infra/ServiceLocator.hpp"
 #include "Core/Systems/RandomGenerator.hpp"
 #include "Core/World/Unit.hpp"
 #include "Core/World/World.hpp"
-#include "Core/Infra/ServiceLocator.hpp"
 
 namespace sw::core
 {

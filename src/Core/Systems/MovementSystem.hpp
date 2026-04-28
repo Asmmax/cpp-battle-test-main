@@ -13,8 +13,8 @@ namespace sw::core
 	class MovementSystem
 	{
 	private:
-		std::unordered_map<uint32_t, Position> _targets;
-		std::unordered_set<uint32_t> _occupyingUnits;
+		std::unordered_map<uint32_t, Position> _targets{};
+		std::unordered_set<uint32_t> _occupyingUnits{};
 
 	public:
 		Position nextStep(const Position& from, const Position& to) const;

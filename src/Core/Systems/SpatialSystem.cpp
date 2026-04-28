@@ -77,7 +77,7 @@ namespace sw::core
 		return _flyingUnits.contains(unitId);
 	}
 
-	void SpatialSystem::setHidden(uint32_t unitId) 
+	void SpatialSystem::setHidden(uint32_t unitId)
 	{
 		_hiddenUnits.insert(unitId);
 	}

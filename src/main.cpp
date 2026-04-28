@@ -1,3 +1,13 @@
+#include <Core/Infra/EventBus.hpp>
+#include <Core/Infra/ServiceLocator.hpp>
+#include <Core/Systems/MovementSystem.hpp>
+#include <Core/Systems/RandomGenerator.hpp>
+#include <Core/Systems/SpatialSystem.hpp>
+#include <Core/World/World.hpp>
+#include <Features/Commands/CreateMap.hpp>
+#include <Features/Commands/March.hpp>
+#include <Features/Commands/SpawnHunter.hpp>
+#include <Features/Commands/SpawnSwordsman.hpp>
 #include <IO/Commands/CreateMap.hpp>
 #include <IO/Commands/March.hpp>
 #include <IO/Commands/SpawnHunter.hpp>
@@ -12,32 +22,22 @@
 #include <IO/System/CommandParser.hpp>
 #include <IO/System/EventLog.hpp>
 #include <IO/System/PrintDebug.hpp>
-#include <Features/Commands/CreateMap.hpp>
-#include <Features/Commands/March.hpp>
-#include <Features/Commands/SpawnSwordsman.hpp>
-#include <Features/Commands/SpawnHunter.hpp>
-#include <Core/Systems/MovementSystem.hpp>
-#include <Core/Systems/SpatialSystem.hpp>
-#include <Core/Systems/RandomGenerator.hpp>
-#include <Core/World/World.hpp>
-#include <Core/Infra/EventBus.hpp>
-#include <Core/Infra/ServiceLocator.hpp>
 #include <fstream>
 #include <iostream>
 
 using namespace sw;
 
-template<typename T>
-void registerCommand(core::World& world, T& command)
+template <typename TCommand>
+void registerCommand(core::World& world, TCommand& command)
 {
 	printDebug(std::cout, command);
 	world.scheduleCommand(features::createCommand(command));
 }
 
-template <typename T>
-void registerEvent(core::World& world, T&& eventData)
+template <typename TEvent>
+void registerEvent(core::World& world, TEvent&& eventData)
 {
-	EventLog{}.log(world.getStepNum(), std::forward<T>(eventData));
+	EventLog{}.log(world.getStepNum(), std::forward<TEvent>(eventData));
 }
 
 int main(int argc, char** argv)

@@ -10,8 +10,8 @@ namespace sw::core
 	class DelayedAction : public IActionNode
 	{
 	private:
-		std::unique_ptr<IActionNode> _next;
-		bool _prevState;
+		std::unique_ptr<IActionNode> _next{};
+		bool _prevState{};
 
 	public:
 		DelayedAction(std::unique_ptr<IActionNode> next, bool startState = false);

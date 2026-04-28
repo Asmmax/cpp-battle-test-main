@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Unit.hpp"
 #include "Bound.hpp"
+#include "Unit.hpp"
 
-#include <optional>
 #include <functional>
+#include <optional>
 
 namespace sw::core
 {
@@ -14,11 +14,11 @@ namespace sw::core
 		using Command = std::function<void(World&)>;
 
 	private:
-		int _stepCounter = 0;
-		std::vector<Command> _commandQueue;
-		std::vector<Unit> _units;
-		std::vector<uint32_t> _pendingDeleteUnits;
-		std::optional<Bound> _map;
+		int _stepCounter{};
+		std::vector<Command> _commandQueue{};
+		std::vector<Unit> _units{};
+		std::vector<uint32_t> _pendingDeleteUnits{};
+		std::optional<Bound> _map{};
 
 	public:
 		void createMap(uint32_t width, uint32_t height);

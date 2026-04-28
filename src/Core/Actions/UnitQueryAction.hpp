@@ -2,8 +2,8 @@
 
 #include "AContextActionNode.hpp"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace sw::core
 {
@@ -12,9 +12,9 @@ namespace sw::core
 	class UnitQueryAction : public AContextActionNode<std::vector<uint32_t>>
 	{
 	private:
-		std::unique_ptr<IStatProvider> _minRange;
-		std::unique_ptr<IStatProvider> _maxRange;
-		bool _withFlying;
+		std::unique_ptr<IStatProvider> _minRange{};
+		std::unique_ptr<IStatProvider> _maxRange{};
+		bool _withFlying{};
 
 	public:
 		UnitQueryAction(

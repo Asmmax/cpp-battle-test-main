@@ -1,9 +1,9 @@
 #include "UnitQueryAction.hpp"
 
+#include "Core/Infra/ServiceLocator.hpp"
 #include "Core/Providers/IStatProvider.hpp"
 #include "Core/Systems/SpatialSystem.hpp"
 #include "Core/World/Unit.hpp"
-#include "Core/Infra/ServiceLocator.hpp"
 
 namespace sw::core
 {
@@ -12,8 +12,7 @@ namespace sw::core
 			_minRange(std::move(minRange)),
 			_maxRange(std::move(maxRange)),
 			_withFlying(withFlying)
-	{
-	}
+	{}
 
 	UnitQueryAction::~UnitQueryAction() = default;
 

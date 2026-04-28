@@ -9,8 +9,8 @@ namespace sw::core
 	class TriggerAction : public IActionNode
 	{
 	private:
-		std::unique_ptr<IActionNode> _next;
-		bool _state{false};
+		std::unique_ptr<IActionNode> _next{};
+		bool _state{};
 
 	public:
 		TriggerAction(std::unique_ptr<IActionNode> next);

@@ -1,20 +1,17 @@
 #include "HitAction.hpp"
 
-#include "IO/Events/UnitAttacked.hpp"
+#include "Core/Infra/EventBus.hpp"
+#include "Core/Infra/ServiceLocator.hpp"
 #include "Core/Providers/IStatProvider.hpp"
 #include "Core/Systems/RandomGenerator.hpp"
 #include "Core/Systems/SpatialSystem.hpp"
 #include "Core/World/Unit.hpp"
 #include "Core/World/World.hpp"
-#include "Core/Infra/EventBus.hpp"
-#include "Core/Infra/ServiceLocator.hpp"
+#include "IO/Events/UnitAttacked.hpp"
 
 namespace sw::core
 {
-	HitAction::HitAction(
-		std::string id,
-		std::unique_ptr<IStatProvider> health,
-		std::unique_ptr<IStatProvider> damage) :
+	HitAction::HitAction(std::string id, std::unique_ptr<IStatProvider> health, std::unique_ptr<IStatProvider> damage) :
 			_id(std::move(id)),
 			_health(std::move(health)),
 			_damage(std::move(damage))

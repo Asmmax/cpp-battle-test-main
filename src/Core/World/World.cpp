@@ -1,10 +1,10 @@
 #include "World.hpp"
 
+#include "Core/Actions/IActionNode.hpp"
+#include "Core/Infra/EventBus.hpp"
 #include "IO/Events/MapCreated.hpp"
 #include "IO/Events/UnitDied.hpp"
 #include "IO/Events/UnitSpawned.hpp"
-#include "Core/Actions/IActionNode.hpp"
-#include "Core/Infra/EventBus.hpp"
 
 #include <algorithm>
 #include <assert.h>
@@ -74,7 +74,7 @@ namespace sw::core
 		return true;
 	}
 
-	void World::run() 
+	void World::run()
 	{
 		while (step())
 		{

@@ -12,7 +12,7 @@ namespace sw::core
 	{
 	private:
 		using AContextActionNodePtr = std::unique_ptr<AContextActionNode<TContext>>;
-		std::vector<AContextActionNodePtr> _children;
+		std::vector<AContextActionNodePtr> _children{};
 
 	public:
 		template <typename... Args>

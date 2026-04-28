@@ -2,9 +2,9 @@
 
 #include "AContextActionNode.hpp"
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace sw::core
 {
@@ -13,15 +13,12 @@ namespace sw::core
 	class HitAction : public AContextActionNode<std::vector<uint32_t>>
 	{
 	private:
-		std::string _id;
-		std::unique_ptr<IStatProvider> _health;
-		std::unique_ptr<IStatProvider> _damage;
+		std::string _id{};
+		std::unique_ptr<IStatProvider> _health{};
+		std::unique_ptr<IStatProvider> _damage{};
 
 	public:
-		HitAction(
-			std::string id,
-			std::unique_ptr<IStatProvider> health,
-			std::unique_ptr<IStatProvider> damage);
+		HitAction(std::string id, std::unique_ptr<IStatProvider> health, std::unique_ptr<IStatProvider> damage);
 
 		~HitAction();
 

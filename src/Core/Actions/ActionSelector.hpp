@@ -2,8 +2,8 @@
 
 #include "IActionNode.hpp"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace sw::core
 {
@@ -11,7 +11,7 @@ namespace sw::core
 	{
 	private:
 		using IActionNodePtr = std::unique_ptr<IActionNode>;
-		std::vector<IActionNodePtr> _children;
+		std::vector<IActionNodePtr> _children{};
 
 	public:
 		template <typename... Args>
