@@ -16,16 +16,4 @@ namespace sw::core
 		}
 		return false;
 	}
-
-	bool ActionSelector::check(Unit& self, World& world) const
-	{
-		for (const auto& child : _children)
-		{
-			if (child->check(self, world))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
 }

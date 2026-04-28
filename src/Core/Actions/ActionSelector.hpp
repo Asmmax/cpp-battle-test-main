@@ -20,6 +20,5 @@ namespace sw::core
 		}
 
 		virtual bool execute(Unit& self, World& world) override;
-		virtual bool check(Unit& self, World& world) const override;
 	};
 }

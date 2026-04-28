@@ -10,6 +10,5 @@ namespace sw::core
 	public:
 		virtual ~IActionNode() = default;
 		virtual bool execute(Unit& self, World& world) = 0;
-		virtual bool check(Unit& self, World& world) const = 0;
 	};
 }

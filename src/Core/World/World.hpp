@@ -25,9 +25,9 @@ namespace sw::core
 		Bound* getMap();
 
 		void scheduleCommand(Command command);
-		bool canStep();
 		int getStepNum();
-		void step();
+		bool step();
+		void run();
 
 		void addUnit(const Unit& unit);
 		Unit* tryGetUnit(uint32_t id);

@@ -27,9 +27,4 @@ namespace sw::core
 		}
 		return hasStep;
 	}
-
-	bool MoveAction::check(Unit& self, World& world) const
-	{
-		return ServiceLocator::get<MovementSystem>().canMove(self, world);
-	}
 }

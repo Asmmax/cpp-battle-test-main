@@ -44,14 +44,6 @@ namespace sw::core
 		return true;
 	}
 
-	bool DamageAction::check(Unit& self, World& world) const
-	{
-		std::vector<uint32_t> enemies = ServiceLocator::get<SpatialSystem>().findUnitsInRange(
-			world, self.pos, _minRange->get(self), _maxRange->get(self), _withFlying);
-
-		return !enemies.empty();
-	}
-
 	void DamageAction::hit(World& world, Unit& attacker, Unit& target, uint32_t damage)
 	{
 		uint32_t health = _health->get(target);

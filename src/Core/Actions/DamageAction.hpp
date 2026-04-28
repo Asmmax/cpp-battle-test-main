@@ -34,13 +34,8 @@ namespace sw::core
 
 	public:
 		virtual bool execute(Unit& self, World& world) override;
-		virtual bool check(Unit& self, World& world) const override;
 
 	protected:
-		void prepare(Unit& self, World& world);
-		bool canAct(Unit& self, World& world) const;
-		void act(Unit& self, World& world);
-
 		void hit(World& world, Unit& attacker, Unit& target, uint32_t damage);
 	};
 }

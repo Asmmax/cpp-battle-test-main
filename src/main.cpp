@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 		throw std::runtime_error("Error: File not found - " + std::string(argv[1]));
 	}
 
-	auto world = std::make_shared<core::World>();
+	core::World world;
 
 	core::ServiceLocator::set(std::make_unique<core::SpatialSystem>());
 	core::ServiceLocator::set(std::make_unique<core::MovementSystem>());
@@ -61,26 +61,24 @@ int main(int argc, char** argv)
 
 	std::cout << "Commands:\n";
 	io::CommandParser parser;
-	parser.add<io::CreateMap>([world](auto command) { registerCommand(*world, command); })
-		.add<io::SpawnSwordsman>([world](auto command) { registerCommand(*world, command); })
-		.add<io::SpawnHunter>([world](auto command) { registerCommand(*world, command); })
-		.add<io::March>([world](auto command) { registerCommand(*world, command); });
+	parser.add<io::CreateMap>([&world](auto command) { registerCommand(world, command); })
+		.add<io::SpawnSwordsman>([&world](auto command) { registerCommand(world, command); })
+		.add<io::SpawnHunter>([&world](auto command) { registerCommand(world, command); })
+		.add<io::March>([&world](auto command) { registerCommand(world, command); });
 
 	parser.parse(file);
 
 	std::cout << "\n\nEvents:\n";
 
-	core::EventBus::subscribe<io::MapCreated>([world](auto eventData) { registerEvent(*world, eventData); });
-	core::EventBus::subscribe<io::MarchEnded>([world](auto eventData) { registerEvent(*world, eventData); });
-	core::EventBus::subscribe<io::MarchStarted>([world](auto eventData) { registerEvent(*world, eventData); });
-	core::EventBus::subscribe<io::UnitAttacked>([world](auto eventData) { registerEvent(*world, eventData); });
-	core::EventBus::subscribe<io::UnitDied>([world](auto eventData) { registerEvent(*world, eventData); });
-	core::EventBus::subscribe<io::UnitMoved>([world](auto eventData) { registerEvent(*world, eventData); });
-	core::EventBus::subscribe<io::UnitSpawned>([world](auto eventData) { registerEvent(*world, eventData); });
+	core::EventBus::subscribe<io::MapCreated>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<io::MarchEnded>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<io::MarchStarted>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<io::UnitAttacked>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<io::UnitDied>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<io::UnitMoved>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<io::UnitSpawned>([&world](auto eventData) { registerEvent(world, eventData); });
 
-	while (world->canStep()) {
-		world->step();
-	}
+	world.run();
 
 	return 0;
 }
