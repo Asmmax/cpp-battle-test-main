@@ -1,10 +1,10 @@
 #include "World.hpp"
 
+#include "Core/Actions/IActionNode.hpp"
+#include "Core/Infra/EventBus.hpp"
 #include "IO/Events/MapCreated.hpp"
 #include "IO/Events/UnitDied.hpp"
 #include "IO/Events/UnitSpawned.hpp"
-#include "Core/Actions/IAction.hpp"
-#include "Core/Infra/EventBus.hpp"
 
 #include <algorithm>
 #include <assert.h>
@@ -27,29 +27,16 @@ namespace sw::core
 		_commandQueue.push_back(std::move(command));
 	}
 
-	bool World::canStep()
-	{
-		if (!_commandQueue.empty())
-		{
-			return true;
-		}
-		if (_units.size() <= 1)
-		{
-			return false;
-		}
-		return std::any_of(
-			_units.begin(), _units.end(), [this](Unit& unit) { return unit.action->isValid(unit, *this); });
-	}
-
 	int World::getStepNum()
 	{
 		return _stepCounter;
 	}
 
-	void World::step()
+	bool World::step()
 	{
 		_stepCounter++;
 
+		uint32_t executedUnitsCount = 0;
 		for (Unit& unit : _units)
 		{
 			if (std::find(_pendingDeleteUnits.begin(), _pendingDeleteUnits.end(), unit.unitId)
@@ -57,11 +44,14 @@ namespace sw::core
 			{
 				continue;
 			}
-			if (!unit.action)
+			if (!unit.behaviour)
 			{
 				continue;
 			}
-			(*unit.action)(unit, *this);
+			if (unit.behaviour->execute(unit, *this))
+			{
+				executedUnitsCount++;
+			}
 		}
 
 		for (auto id : _pendingDeleteUnits)
@@ -70,11 +60,25 @@ namespace sw::core
 		}
 		_pendingDeleteUnits.clear();
 
+		if (_commandQueue.empty() && executedUnitsCount <= 1)
+		{
+			return false;
+		}
+
 		for (auto& command : _commandQueue)
 		{
 			command(*this);
 		}
 		_commandQueue.clear();
+
+		return true;
+	}
+
+	void World::run()
+	{
+		while (step())
+		{
+		}
 	}
 
 	void World::addUnit(const Unit& unit)

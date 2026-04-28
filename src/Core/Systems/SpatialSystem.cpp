@@ -5,6 +5,27 @@
 
 namespace sw::core
 {
+	std::vector<uint32_t> SpatialSystem::findUnitsInPoint(World& world, const Position& point, bool withFlying)
+	{
+		std::vector<uint32_t> result;
+
+		std::vector<uint32_t> units = world.getUnitsByPos(point);
+		for (auto unitId : units)
+		{
+			if (isHidden(unitId))
+			{
+				continue;
+			}
+
+			if (withFlying || !isFlying(unitId))
+			{
+				result.push_back(unitId);
+			}
+		}
+
+		return result;
+	}
+
 	std::vector<uint32_t> SpatialSystem::findUnitsInRange(
 		World& world, const Position& origin, uint32_t minDist, uint32_t maxDist, bool withFlying)
 	{
@@ -16,13 +37,13 @@ namespace sw::core
 			return result;
 		}
 
+		const int range = static_cast<int>(maxDist);
 		const uint32_t size = maxDist * 2 + 1;
 		result.reserve(size * size);
 
-		const int halfRange = static_cast<int>(maxDist);
-		for (int dx = -halfRange; dx <= halfRange; dx++)
+		for (int dx = -range; dx <= range; dx++)
 		{
-			for (int dy = -halfRange; dy <= halfRange; dy++)
+			for (int dy = -range; dy <= range; dy++)
 			{
 				Position pos{origin.x + dx, origin.y + dy};
 
@@ -31,23 +52,11 @@ namespace sw::core
 					continue;
 				}
 
-				std::vector<uint32_t> units = world.getUnitsByPos(pos);
+				std::vector<uint32_t> units = findUnitsInPoint(world, pos, withFlying);
 				for (auto unitId : units)
 				{
-					if (_hiddenUnits.contains(unitId))
-					{
-						continue;
-					}
-
-					const auto foundIt = _distOffset.find(unitId);
-					const uint32_t distOffset = (foundIt == _distOffset.end()) ? 0 : foundIt->second;
-					const uint32_t dist = std::max(std::abs(dx), std::abs(dy)) + distOffset;
-					if (dist < minDist || dist > maxDist)
-					{
-						continue;
-					}
-
-					if (withFlying || !_flyingUnits.contains(unitId))
+					const uint32_t dist = distanceTo(unitId, pos, origin);
+					if (dist >= minDist && dist <= maxDist)
 					{
 						result.push_back(unitId);
 					}
@@ -58,18 +67,39 @@ namespace sw::core
 		return result;
 	}
 
-	void SpatialSystem::setFlying(const Unit& unit)
+	void SpatialSystem::setFlying(uint32_t unitId)
 	{
-		_flyingUnits.insert(unit.unitId);
+		_flyingUnits.insert(unitId);
 	}
 
-	void SpatialSystem::setHidden(const Unit& unit) 
+	bool SpatialSystem::isFlying(uint32_t unitId) const
 	{
-		_hiddenUnits.insert(unit.unitId);
+		return _flyingUnits.contains(unitId);
 	}
 
-	void SpatialSystem::setDistOffset(const Unit& unit, uint32_t offset)
+	void SpatialSystem::setHidden(uint32_t unitId)
 	{
-		_distOffset.insert({unit.unitId, offset});
+		_hiddenUnits.insert(unitId);
+	}
+
+	bool SpatialSystem::isHidden(uint32_t unitId) const
+	{
+		return _hiddenUnits.contains(unitId);
+	}
+
+	void SpatialSystem::setDistOffset(uint32_t unitId, uint32_t offset)
+	{
+		_distOffset.insert({unitId, offset});
+	}
+
+	uint32_t SpatialSystem::distanceTo(uint32_t unitId, const Position& unitPos, const Position& origin) const
+	{
+		const int dx = static_cast<int>(unitPos.x) - static_cast<int>(origin.x);
+		const int dy = static_cast<int>(unitPos.y) - static_cast<int>(origin.y);
+
+		const auto it = _distOffset.find(unitId);
+		const uint32_t offset = (it != _distOffset.end()) ? it->second : 0;
+		const uint32_t base = std::max(static_cast<uint32_t>(std::abs(dx)), static_cast<uint32_t>(std::abs(dy)));
+		return base + offset;
 	}
 }

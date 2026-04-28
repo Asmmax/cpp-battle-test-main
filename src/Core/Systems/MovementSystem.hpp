@@ -13,14 +13,18 @@ namespace sw::core
 	class MovementSystem
 	{
 	private:
-		std::unordered_map<uint32_t, Position> _targets;
-		std::unordered_set<uint32_t> _occupyingUnits;
+		std::unordered_map<uint32_t, Position> _targets{};
+		std::unordered_set<uint32_t> _occupyingUnits{};
 
 	public:
-		void advance(Unit& unit, World& world);
+		Position nextStep(const Position& from, const Position& to) const;
+
+		bool advance(Unit& unit, World& world);
 		void move(const Unit& unit, const Position& target);
-		bool isMoving(const Unit& unit, World& world);
+		void finishMove(Unit& unit);
+		bool canMove(const Unit& unit, World& world);
 
 		void setOccupying(const Unit& unit);
+		bool isBlocked(const Position& pos, World& world) const;
 	};
 }

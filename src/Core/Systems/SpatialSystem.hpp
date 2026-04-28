@@ -1,9 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <cstdint>
 
 namespace sw::core
 {
@@ -14,16 +14,22 @@ namespace sw::core
 	class SpatialSystem
 	{
 	private:
-		std::unordered_map<uint32_t, uint32_t> _distOffset;
-		std::unordered_set<uint32_t> _flyingUnits;
-		std::unordered_set<uint32_t> _hiddenUnits;
+		std::unordered_map<uint32_t, uint32_t> _distOffset{};
+		std::unordered_set<uint32_t> _flyingUnits{};
+		std::unordered_set<uint32_t> _hiddenUnits{};
 
 	public:
+		std::vector<uint32_t> findUnitsInPoint(World& world, const Position& point, bool withFlying = false);
 		std::vector<uint32_t> findUnitsInRange(
 			World& world, const Position& origin, uint32_t minDist, uint32_t maxDist, bool withFlying = false);
 
-		void setFlying(const Unit& unit);
-		void setHidden(const Unit& unit);
-		void setDistOffset(const Unit& unit, uint32_t offset);
+		void setFlying(uint32_t unitId);
+		bool isFlying(uint32_t unitId) const;
+
+		void setHidden(uint32_t unitId);
+		bool isHidden(uint32_t unitId) const;
+
+		void setDistOffset(uint32_t unitId, uint32_t offset);
+		uint32_t distanceTo(uint32_t unitId, const Position& unitPos, const Position& origin) const;
 	};
 }

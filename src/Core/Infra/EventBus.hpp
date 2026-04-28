@@ -1,34 +1,34 @@
 #pragma once
 
-#include <vector>
 #include <functional>
+#include <vector>
 
 namespace sw::core
 {
 	class EventBus
 	{
 	private:
-		template <typename EventType>
-		using Handler = std::function<void(EventType)>;
+		template <typename TEvent>
+		using Handler = std::function<void(TEvent)>;
 
-		template <typename EventType>
-		static std::vector<Handler<EventType>>& getHandlers()
+		template <typename TEvent>
+		static std::vector<Handler<TEvent>>& getHandlers()
 		{
-			static std::vector<Handler<EventType>> handlers;
+			static std::vector<Handler<TEvent>> handlers;
 			return handlers;
 		}
 
 	public:
-		template <typename EventType>
-		static void subscribe(Handler<EventType> handler)
+		template <typename TEvent>
+		static void subscribe(Handler<TEvent> handler)
 		{
-			getHandlers<EventType>().push_back(std::move(handler));
+			getHandlers<TEvent>().push_back(std::move(handler));
 		}
 
-		template <typename EventType>
-		static void publish(EventType&& eventData)
+		template <typename TEvent>
+		static void publish(TEvent&& eventData)
 		{
-			for (auto& handler : getHandlers<EventType>())
+			for (auto& handler : getHandlers<TEvent>())
 			{
 				handler(eventData);
 			}

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "IAction.hpp"
+#include "IActionNode.hpp"
 
 #include <cstdint>
 
 namespace sw::core
 {
-	class MoveAction : public IAction
+	class MoveAction : public IActionNode
 	{
 	private:
 		uint32_t _speed{};
@@ -14,8 +14,6 @@ namespace sw::core
 	public:
 		MoveAction(uint32_t speed = 1);
 
-		virtual void operator()(Unit& self, World& world) override;
-
-		virtual bool isValid(Unit& self, World& world) const override;
+		virtual bool execute(Unit& self, World& world) override;
 	};
 }
