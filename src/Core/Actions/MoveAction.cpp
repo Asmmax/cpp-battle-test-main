@@ -11,16 +11,25 @@ namespace sw::core
 			_speed(speed)
 	{}
 
-	void MoveAction::operator()(Unit& self, World& world)
+	bool MoveAction::execute(Unit& self, World& world)
 	{
-		for (uint32_t i = 0; i < _speed; i++)
+		bool hasStep = false;
+		for (int i = 0; i < _speed; i++)
 		{
-			ServiceLocator::get<MovementSystem>().advance(self, world);
+			if (ServiceLocator::get<MovementSystem>().advance(self, world))
+			{
+				hasStep = true;
+			}
+			else
+			{
+				break;
+			}
 		}
+		return hasStep;
 	}
 
-	bool MoveAction::isValid(Unit& self, World& world) const
+	bool MoveAction::check(Unit& self, World& world) const
 	{
-		return ServiceLocator::get<MovementSystem>().isMoving(self, world);
+		return ServiceLocator::get<MovementSystem>().canMove(self, world);
 	}
 }

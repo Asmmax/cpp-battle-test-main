@@ -1,5 +1,6 @@
 #include "SpawnHunter.hpp"
 
+#include <Core/Actions/ActionSelector.hpp>
 #include <Core/Actions/DamageAction.hpp>
 #include <Core/Actions/MoveAction.hpp>
 #include <Core/Providers/ConstStatProvider.hpp>
@@ -26,21 +27,22 @@ namespace sw::features
 		unit.stats.insert({"Agility", data.agility});
 		unit.stats.insert({"Range", data.range});
 
-		unit.action = std::make_shared<core::DamageAction>(
-			"SHADOW_STRIKE",
-			std::make_unique<core::UnitStatProvider>("Health"),
-			std::make_unique<core::UnitStatProvider>("Strength"),
-			std::make_unique<core::ConstStatProvider>(1),
-			std::make_unique<core::ConstStatProvider>(1),
-			false,
-			std::make_shared<core::DamageAction>(
+		unit.behaviour = std::make_unique<core::ActionSelector>(
+			std::make_unique<core::DamageAction>(
+				"SHADOW_STRIKE",
+				std::make_unique<core::UnitStatProvider>("Health"),
+				std::make_unique<core::UnitStatProvider>("Strength"),
+				std::make_unique<core::ConstStatProvider>(1),
+				std::make_unique<core::ConstStatProvider>(1),
+				false),
+			std::make_unique<core::DamageAction>(
 				"RAPID_SHOT",
 				std::make_unique<core::UnitStatProvider>("Health"),
 				std::make_unique<core::UnitStatProvider>("Agility"),
 				std::make_unique<core::ConstStatProvider>(2),
 				std::make_unique<core::UnitStatProvider>("Range"),
-				true,
-				std::make_shared<core::MoveAction>()));
+				true),
+			std::make_unique<core::MoveAction>());
 
 		return [unit](core::World& world)
 		{

@@ -17,9 +17,8 @@ namespace sw::core
 		std::unique_ptr<IStatProvider> damage,
 		std::unique_ptr<IStatProvider> minRange,
 		std::unique_ptr<IStatProvider> maxRange,
-		bool withFlying,
-		std::shared_ptr<IAction> next) :
-			AAction(id, next),
+		bool withFlying) :
+			_id(std::move(id)),
 			_health(std::move(health)),
 			_damage(std::move(damage)),
 			_minRange(std::move(minRange)),
@@ -29,23 +28,28 @@ namespace sw::core
 
 	DamageAction::~DamageAction() = default;
 
-	void DamageAction::prepare(Unit& self, World& world)
+	bool DamageAction::execute(Unit& self, World& world)
 	{
-		_enemies = ServiceLocator::get<SpatialSystem>().findUnitsInRange(
+		std::vector<uint32_t> enemies = ServiceLocator::get<SpatialSystem>().findUnitsInRange(
 			world, self.pos, _minRange->get(self), _maxRange->get(self), _withFlying);
-	}
 
-	bool DamageAction::canAct(Unit& self, World& world) const
-	{
-		return !_enemies.empty();
-	}
+		if (enemies.empty())
+		{
+			return false;
+		}
 
-	void DamageAction::act(Unit& self, World& world)
-	{
-		uint32_t enemyId = ServiceLocator::get<RandomGenerator>().choose(_enemies);
-		uint32_t targetId = _enemies[enemyId];
+		uint32_t enemyId = ServiceLocator::get<RandomGenerator>().choose(enemies);
+		uint32_t targetId = enemies[enemyId];
 		hit(world, self, world.getUnit(targetId), _damage->get(self));
-		return;
+		return true;
+	}
+
+	bool DamageAction::check(Unit& self, World& world) const
+	{
+		std::vector<uint32_t> enemies = ServiceLocator::get<SpatialSystem>().findUnitsInRange(
+			world, self.pos, _minRange->get(self), _maxRange->get(self), _withFlying);
+
+		return !enemies.empty();
 	}
 
 	void DamageAction::hit(World& world, Unit& attacker, Unit& target, uint32_t damage)

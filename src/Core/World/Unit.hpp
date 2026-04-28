@@ -8,7 +8,7 @@
 
 namespace sw::core
 {
-	class IAction;
+	class IActionNode;
 
 	struct Unit
 	{
@@ -16,6 +16,6 @@ namespace sw::core
 		std::string unitType{};
 		Position pos{};
 		std::unordered_map<std::string, uint32_t> stats;
-		std::shared_ptr<IAction> action;
+		std::shared_ptr<IActionNode> behaviour;
 	};
 }

@@ -19,10 +19,10 @@ namespace sw::core
 	public:
 		Position nextStep(const Position& from, const Position& to) const;
 
-		void advance(Unit& unit, World& world);
+		bool advance(Unit& unit, World& world);
 		void move(const Unit& unit, const Position& target);
 		void finishMove(Unit& unit);
-		bool isMoving(const Unit& unit, World& world);
+		bool canMove(const Unit& unit, World& world);
 
 		void setOccupying(const Unit& unit);
 		bool isBlocked(const Position& pos, World& world) const;

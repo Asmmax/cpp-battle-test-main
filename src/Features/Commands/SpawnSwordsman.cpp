@@ -1,5 +1,6 @@
 #include "SpawnSwordsman.hpp"
 
+#include <Core/Actions/ActionSelector.hpp>
 #include <Core/Actions/DamageAction.hpp>
 #include <Core/Actions/MoveAction.hpp>
 #include <Core/Providers/ConstStatProvider.hpp>
@@ -24,14 +25,16 @@ namespace sw::features
 		unit.stats.insert({"Health", data.hp});
 		unit.stats.insert({"Strength", data.strength});
 
-		unit.action = std::make_shared<core::DamageAction>(
-			"CRUSHING_BLOW",
-			std::make_unique<core::UnitStatProvider>("Health"),
-			std::make_unique<core::UnitStatProvider>("Strength"),
-			std::make_unique<core::ConstStatProvider>(1),
-			std::make_unique<core::ConstStatProvider>(1),
-			false,
-			std::make_shared<core::MoveAction>());
+		unit.behaviour = std::make_unique<core::ActionSelector>(
+			std::make_unique<core::DamageAction>(
+				"CRUSHING_BLOW",
+				std::make_unique<core::UnitStatProvider>("Health"),
+				std::make_unique<core::UnitStatProvider>("Strength"),
+				std::make_unique<core::ConstStatProvider>(1),
+				std::make_unique<core::ConstStatProvider>(1),
+				false),
+			std::make_unique<core::MoveAction>()
+		);
 
 		return [unit](core::World& world)
 		{

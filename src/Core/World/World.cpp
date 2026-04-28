@@ -3,7 +3,7 @@
 #include "IO/Events/MapCreated.hpp"
 #include "IO/Events/UnitDied.hpp"
 #include "IO/Events/UnitSpawned.hpp"
-#include "Core/Actions/IAction.hpp"
+#include "Core/Actions/IActionNode.hpp"
 #include "Core/Infra/EventBus.hpp"
 
 #include <algorithm>
@@ -38,7 +38,7 @@ namespace sw::core
 			return false;
 		}
 		return std::any_of(
-			_units.begin(), _units.end(), [this](Unit& unit) { return unit.action->isValid(unit, *this); });
+			_units.begin(), _units.end(), [this](Unit& unit) { return unit.behaviour->check(unit, *this); });
 	}
 
 	int World::getStepNum()
@@ -57,11 +57,11 @@ namespace sw::core
 			{
 				continue;
 			}
-			if (!unit.action)
+			if (!unit.behaviour)
 			{
 				continue;
 			}
-			(*unit.action)(unit, *this);
+			unit.behaviour->execute(unit, *this);
 		}
 
 		for (auto id : _pendingDeleteUnits)

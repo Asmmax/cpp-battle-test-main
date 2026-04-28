@@ -29,12 +29,12 @@ namespace sw::core
 		return {from.x + stepToward(from.x, to.x), from.y + stepToward(from.y, to.y)};
 	}
 
-	void MovementSystem::advance(Unit& unit, World& world)
+	bool MovementSystem::advance(Unit& unit, World& world)
 	{
 		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
 		{
-			return;
+			return false;
 		}
 
 		const Position& target = it->second;
@@ -42,12 +42,13 @@ namespace sw::core
 		if (unit.pos == target)
 		{
 			finishMove(unit);
-			return;
+			return false;
 		}
 
 		const Position next = nextStep(unit.pos, target);
 
-		if (!isBlocked(next, world))
+		const bool canMove = !isBlocked(next, world);
+		if (canMove)
 		{
 			unit.pos = next;
 			EventBus::publish<sw::io::UnitMoved>({unit.unitId, next.x, next.y});
@@ -57,6 +58,7 @@ namespace sw::core
 		{
 			finishMove(unit);
 		}
+		return canMove;
 	}
 
 	void MovementSystem::move(const Unit& unit, const Position& target)
@@ -78,7 +80,7 @@ namespace sw::core
 		EventBus::publish<sw::io::MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
 	}
 
-	bool MovementSystem::isMoving(const Unit& unit, World& world)
+	bool MovementSystem::canMove(const Unit& unit, World& world)
 	{
 		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
