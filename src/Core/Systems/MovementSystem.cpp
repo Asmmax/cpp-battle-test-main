@@ -11,47 +11,43 @@
 
 namespace sw::core
 {
+	static int stepToward(int from, int to)
+	{
+		if (to > from)
+		{
+			return 1;
+		}
+		if (to < from)
+		{
+			return -1;
+		}
+		return 0;
+	}
+
+	Position MovementSystem::nextStep(const Position& from, const Position& to) const
+	{
+		return {from.x + stepToward(from.x, to.x), from.y + stepToward(from.y, to.y)};
+	}
+
 	void MovementSystem::advance(Unit& unit, World& world)
 	{
-		auto it = _targets.find(unit.unitId);
+		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
 		{
 			return;
 		}
 
-		const Position target = it->second;
+		const Position& target = it->second;
 
 		if (unit.pos == target)
 		{
-			_targets.erase(it);
-			EventBus::publish<sw::io::MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
+			finishMove(unit);
 			return;
 		}
 
-		Position next = unit.pos;
+		const Position next = nextStep(unit.pos, target);
 
-		if (target.x > unit.pos.x)
-		{
-			next.x++;
-		}
-		else if (target.x < unit.pos.x)
-		{
-			next.x--;
-		}
-
-		if (target.y > unit.pos.y)
-		{
-			next.y++;
-		}
-		else if (target.y < unit.pos.y)
-		{
-			next.y--;
-		}
-
-		std::vector<uint32_t> units = world.getUnitsByPos(next);
-		const bool hasOccupy = std::any_of(
-			units.begin(), units.end(), [this](uint32_t unitId) { return _occupyingUnits.contains(unitId); });
-		if (!hasOccupy)
+		if (!isBlocked(next, world))
 		{
 			unit.pos = next;
 			EventBus::publish<sw::io::UnitMoved>({unit.unitId, next.x, next.y});
@@ -59,8 +55,7 @@ namespace sw::core
 
 		if (unit.pos == target)
 		{
-			_targets.erase(it);
-			EventBus::publish<sw::io::MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
+			finishMove(unit);
 		}
 	}
 
@@ -70,49 +65,46 @@ namespace sw::core
 		EventBus::publish<sw::io::MarchStarted>({unit.unitId, unit.pos.x, unit.pos.y, target.x, target.y});
 	}
 
+	void MovementSystem::finishMove(Unit& unit)
+	{
+		const auto it = _targets.find(unit.unitId);
+		if (it == _targets.end())
+		{
+			return;
+		}
+
+		_targets.erase(it);
+
+		EventBus::publish<sw::io::MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
+	}
+
 	bool MovementSystem::isMoving(const Unit& unit, World& world)
 	{
-		auto it = _targets.find(unit.unitId);
+		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
 		{
 			return false;
 		}
 
-		const Position target = it->second;
+		const Position& target = it->second;
 
 		if (unit.pos == target)
 		{
 			return true;
 		}
 
-		Position next = unit.pos;
-
-		if (target.x > unit.pos.x)
-		{
-			next.x++;
-		}
-		else if (target.x < unit.pos.x)
-		{
-			next.x--;
-		}
-
-		if (target.y > unit.pos.y)
-		{
-			next.y++;
-		}
-		else if (target.y < unit.pos.y)
-		{
-			next.y--;
-		}
-
-		std::vector<uint32_t> units = world.getUnitsByPos(next);
-		const bool hasOccupy = std::any_of(
-			units.begin(), units.end(), [this](uint32_t unitId) { return _occupyingUnits.contains(unitId); });
-		return !hasOccupy;
+		return !isBlocked(nextStep(unit.pos, target), world);
 	}
 
 	void MovementSystem::setOccupying(const Unit& unit)
 	{
 		_occupyingUnits.insert(unit.unitId);
+	}
+
+	bool MovementSystem::isBlocked(const Position& pos, World& world) const
+	{
+		const auto units = world.getUnitsByPos(pos);
+
+		return std::any_of(units.begin(), units.end(), [this](uint32_t id) { return _occupyingUnits.contains(id); });
 	}
 }

@@ -17,10 +17,14 @@ namespace sw::core
 		std::unordered_set<uint32_t> _occupyingUnits;
 
 	public:
+		Position nextStep(const Position& from, const Position& to) const;
+
 		void advance(Unit& unit, World& world);
 		void move(const Unit& unit, const Position& target);
+		void finishMove(Unit& unit);
 		bool isMoving(const Unit& unit, World& world);
 
 		void setOccupying(const Unit& unit);
+		bool isBlocked(const Position& pos, World& world) const;
 	};
 }
