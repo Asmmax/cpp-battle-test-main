@@ -34,6 +34,11 @@ namespace sw::core
 				std::vector<uint32_t> units = world.getUnitsByPos(pos);
 				for (auto unitId : units)
 				{
+					if (_hiddenUnits.contains(unitId))
+					{
+						continue;
+					}
+
 					const auto foundIt = _distOffset.find(unitId);
 					const uint32_t distOffset = (foundIt == _distOffset.end()) ? 0 : foundIt->second;
 					const uint32_t dist = std::max(std::abs(dx), std::abs(dy)) + distOffset;
@@ -56,6 +61,11 @@ namespace sw::core
 	void SpatialSystem::setFlying(const Unit& unit)
 	{
 		_flyingUnits.insert(unit.unitId);
+	}
+
+	void SpatialSystem::setHidden(const Unit& unit) 
+	{
+		_hiddenUnits.insert(unit.unitId);
 	}
 
 	void SpatialSystem::setDistOffset(const Unit& unit, uint32_t offset)
