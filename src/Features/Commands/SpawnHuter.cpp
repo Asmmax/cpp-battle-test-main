@@ -30,7 +30,7 @@ namespace sw::features
 		unit.stats.insert({"Agility", data.agility});
 		unit.stats.insert({"Range", data.range});
 
-		unit.behaviour = std::make_unique<core::ActionSelector>(
+		unit.behaviour = std::make_shared<core::ActionSelector>(
 			std::make_unique<core::ContextActionSequence<std::vector<uint32_t>>>(
 				std::make_unique<core::UnitQueryAction>(
 					std::make_unique<core::ConstStatProvider>(1), std::make_unique<core::ConstStatProvider>(1), false),

@@ -1,6 +1,5 @@
 #include "World.hpp"
 
-#include "Core/Actions/IActionNode.hpp"
 #include "Core/Infra/EventBus.hpp"
 #include "Core/Events/MapCreated.hpp"
 #include "Core/Events/UnitDied.hpp"
@@ -20,65 +19,6 @@ namespace sw::core
 	Bound* World::getMap()
 	{
 		return _map ? &_map.value() : nullptr;
-	}
-
-	void World::scheduleCommand(Command command)
-	{
-		_commandQueue.push_back(std::move(command));
-	}
-
-	int World::getStepNum()
-	{
-		return _stepCounter;
-	}
-
-	bool World::step()
-	{
-		_stepCounter++;
-
-		uint32_t executedUnitsCount = 0;
-		for (Unit& unit : _units)
-		{
-			if (std::find(_pendingDeleteUnits.begin(), _pendingDeleteUnits.end(), unit.unitId)
-				!= _pendingDeleteUnits.end())
-			{
-				continue;
-			}
-			if (!unit.behaviour)
-			{
-				continue;
-			}
-			if (unit.behaviour->execute(unit, *this))
-			{
-				executedUnitsCount++;
-			}
-		}
-
-		for (auto id : _pendingDeleteUnits)
-		{
-			std::erase_if(_units, [id](const Unit& unit) { return unit.unitId == id; });
-		}
-		_pendingDeleteUnits.clear();
-
-		if (_commandQueue.empty() && executedUnitsCount <= 1)
-		{
-			return false;
-		}
-
-		for (auto& command : _commandQueue)
-		{
-			command(*this);
-		}
-		_commandQueue.clear();
-
-		return true;
-	}
-
-	void World::run()
-	{
-		while (step())
-		{
-		}
 	}
 
 	void World::addUnit(const Unit& unit)
@@ -113,10 +53,16 @@ namespace sw::core
 		return *unitPtr;
 	}
 
-	bool World::foreachUnit(std::function<bool(const Unit&)> visitor) const
+	bool World::foreachUnit(std::function<bool(Unit&)> visitor)
 	{
-		for (const auto& unit : _units)
+		for (auto& unit : _units)
 		{
+			if (std::find(_pendingDeleteUnits.begin(), _pendingDeleteUnits.end(), unit.unitId)
+				!= _pendingDeleteUnits.end())
+			{
+				continue;
+			}
+
 			if (!visitor(unit))
 			{
 				return false;
@@ -129,5 +75,14 @@ namespace sw::core
 	{
 		_pendingDeleteUnits.push_back(id);
 		EventBus::publish<UnitDied>({id});
+	}
+
+	void World::cleanupUnits() 
+	{
+		for (auto id : _pendingDeleteUnits)
+		{
+			std::erase_if(_units, [id](const Unit& unit) { return unit.unitId == id; });
+		}
+		_pendingDeleteUnits.clear();
 	}
 }

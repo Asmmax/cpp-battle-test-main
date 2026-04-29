@@ -6,6 +6,7 @@
 #include <Core/Events/UnitMoved.hpp>
 #include <Core/Events/UnitSpawned.hpp>
 #include <Core/Infra/EventBus.hpp>
+#include <Core/World/Simulation.hpp>
 #include <Core/World/World.hpp>
 #include <Features/Commands/CreateMap.hpp>
 #include <Features/Commands/March.hpp>
@@ -24,16 +25,16 @@
 using namespace sw;
 
 template <typename TCommand>
-void registerCommand(core::World& world, TCommand& command)
+void registerCommand(core::Simulation& sim, TCommand& command)
 {
 	printDebug(std::cout, command);
-	world.scheduleCommand(features::createCommand(command));
+	sim.scheduleCommand(features::createCommand(command));
 }
 
 template <typename TEvent>
-void registerEvent(core::World& world, TEvent&& eventData)
+void registerEvent(core::Simulation& sim, TEvent&& eventData)
 {
-	EventLog{}.log(world.getStepNum(), std::forward<TEvent>(eventData));
+	EventLog{}.log(sim.getStepNum(), std::forward<TEvent>(eventData));
 }
 
 int main(int argc, char** argv)
@@ -49,28 +50,29 @@ int main(int argc, char** argv)
 		throw std::runtime_error("Error: File not found - " + std::string(argv[1]));
 	}
 
+	core::Simulation sim;
 	core::World world;
 
 	std::cout << "Commands:\n";
 	io::CommandParser parser;
-	parser.add<io::CreateMap>([&world](auto command) { registerCommand(world, command); })
-		.add<io::SpawnSwordsman>([&world](auto command) { registerCommand(world, command); })
-		.add<io::SpawnHunter>([&world](auto command) { registerCommand(world, command); })
-		.add<io::March>([&world](auto command) { registerCommand(world, command); });
+	parser.add<io::CreateMap>([&sim](auto command) { registerCommand(sim, command); })
+		.add<io::SpawnSwordsman>([&sim](auto command) { registerCommand(sim, command); })
+		.add<io::SpawnHunter>([&sim](auto command) { registerCommand(sim, command); })
+		.add<io::March>([&sim](auto command) { registerCommand(sim, command); });
 
 	parser.parse(file);
 
 	std::cout << "\n\nEvents:\n";
 
-	core::EventBus::subscribe<core::MapCreated>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<core::MarchEnded>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<core::MarchStarted>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<core::UnitDied>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<core::UnitMoved>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<core::UnitAttacked>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<core::UnitSpawned>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::MapCreated>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::MarchEnded>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::MarchStarted>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::UnitDied>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::UnitMoved>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::UnitAttacked>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::UnitSpawned>([&sim](auto eventData) { registerEvent(sim, eventData); });
 
-	world.run();
+	sim.run(world);
 
 	return 0;
 }

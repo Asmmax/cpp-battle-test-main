@@ -10,12 +10,7 @@ namespace sw::core
 {
 	class World
 	{
-	public:
-		using Command = std::function<void(World&)>;
-
 	private:
-		int _stepCounter{};
-		std::vector<Command> _commandQueue{};
 		std::vector<Unit> _units{};
 		std::vector<uint32_t> _pendingDeleteUnits{};
 		std::optional<Bound> _map{};
@@ -24,15 +19,11 @@ namespace sw::core
 		void createMap(uint32_t width, uint32_t height);
 		Bound* getMap();
 
-		void scheduleCommand(Command command);
-		int getStepNum();
-		bool step();
-		void run();
-
 		void addUnit(const Unit& unit);
 		Unit* tryGetUnit(uint32_t id);
 		Unit& getUnit(uint32_t id);
-		bool foreachUnit(std::function<bool(const Unit&)> visitor) const;
+		bool foreachUnit(std::function<bool(Unit&)> visitor);
 		void removeUnit(uint32_t id);
+		void cleanupUnits();
 	};
 }
