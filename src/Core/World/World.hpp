@@ -32,7 +32,7 @@ namespace sw::core
 		void addUnit(const Unit& unit);
 		Unit* tryGetUnit(uint32_t id);
 		Unit& getUnit(uint32_t id);
-		std::vector<uint32_t> getUnitsByPos(const Position& pos);
+		bool foreachUnit(std::function<bool(const Unit&)> visitor) const;
 		void removeUnit(uint32_t id);
 	};
 }

@@ -113,17 +113,16 @@ namespace sw::core
 		return *unitPtr;
 	}
 
-	std::vector<uint32_t> World::getUnitsByPos(const Position& pos)
+	bool World::foreachUnit(std::function<bool(const Unit&)> visitor) const
 	{
-		std::vector<uint32_t> result;
 		for (const auto& unit : _units)
 		{
-			if (unit.pos == pos)
+			if (!visitor(unit))
 			{
-				result.push_back(unit.unitId);
+				return false;
 			}
 		}
-		return result;
+		return true;
 	}
 
 	void World::removeUnit(uint32_t id)

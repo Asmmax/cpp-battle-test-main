@@ -105,8 +105,14 @@ namespace sw::core
 
 	bool MovementSystem::isBlocked(const Position& pos, World& world) const
 	{
-		const auto units = world.getUnitsByPos(pos);
-
-		return std::any_of(units.begin(), units.end(), [this](uint32_t id) { return _occupyingUnits.contains(id); });
+		return !world.foreachUnit(
+			[pos, this](const Unit& unit)
+			{
+				if (unit.pos != pos)
+				{
+					return true;
+				}
+				return !_occupyingUnits.contains(unit.unitId);
+			});
 	}
 }

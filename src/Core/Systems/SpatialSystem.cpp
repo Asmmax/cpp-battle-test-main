@@ -9,19 +9,24 @@ namespace sw::core
 	{
 		std::vector<uint32_t> result;
 
-		std::vector<uint32_t> units = world.getUnitsByPos(point);
-		for (auto unitId : units)
-		{
-			if (isHidden(unitId))
+		world.foreachUnit(
+			[&result, point, withFlying, this](const Unit& unit)
 			{
-				continue;
-			}
-
-			if (withFlying || !isFlying(unitId))
-			{
-				result.push_back(unitId);
-			}
-		}
+				if (unit.pos != point)
+				{
+					return true;
+				}
+				if (isHidden(unit.unitId))
+				{
+					return true;
+				}
+				if (!withFlying && isFlying(unit.unitId))
+				{
+					return true;
+				}
+				result.push_back(unit.unitId);
+				return true;
+			});
 
 		return result;
 	}
