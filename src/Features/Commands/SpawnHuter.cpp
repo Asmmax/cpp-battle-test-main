@@ -2,6 +2,7 @@
 
 #include <Core/Actions/ActionSelector.hpp>
 #include <Core/Actions/UnitQueryAction.hpp>
+#include <Core/Actions/StatConsistFilterAction.hpp>
 #include <Core/Actions/RandomFilterAction.hpp>
 #include <Core/Actions/HitAction.hpp>
 #include <Core/Actions/ContextActionSequence.hpp>
@@ -34,6 +35,7 @@ namespace sw::features
 			std::make_unique<core::ContextActionSequence<std::vector<uint32_t>>>(
 				std::make_unique<core::UnitQueryAction>(
 					std::make_unique<core::ConstStatProvider>(1), std::make_unique<core::ConstStatProvider>(1), false),
+				std::make_unique<core::StatConsistFilterAction>("Health"),
 				std::make_unique<core::RandomFilterAction>(),
 				std::make_unique<core::HitAction>(
 					"SHADOW_STRIKE",
@@ -44,6 +46,7 @@ namespace sw::features
 					std::make_unique<core::ConstStatProvider>(2),
 					std::make_unique<core::UnitStatProvider>("Range"),
 					true),
+				std::make_unique<core::StatConsistFilterAction>("Health"),
 				std::make_unique<core::RandomFilterAction>(),
 				std::make_unique<core::HitAction>(
 					"RAPID_SHOT",
