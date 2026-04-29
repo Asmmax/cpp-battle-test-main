@@ -7,24 +7,8 @@
 
 namespace sw::core
 {
-	MoveAction::MoveAction(uint32_t speed) :
-			_speed(speed)
-	{}
-
 	bool MoveAction::execute(Unit& self, World& world)
 	{
-		bool hasStep = false;
-		for (int i = 0; i < _speed; i++)
-		{
-			if (ServiceLocator::get<MovementSystem>().advance(self, world))
-			{
-				hasStep = true;
-			}
-			else
-			{
-				break;
-			}
-		}
-		return hasStep;
+		return ServiceLocator::get<MovementSystem>().advance(self, world);
 	}
 }
