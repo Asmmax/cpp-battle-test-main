@@ -2,7 +2,6 @@
 
 #include <Core/Systems/MovementSystem.hpp>
 #include <Core/World/World.hpp>
-#include <Core/Infra/ServiceLocator.hpp>
 
 namespace sw::features
 {
@@ -10,8 +9,7 @@ namespace sw::features
 	{
 		return [data = data](core::World& world)
 		{
-			core::ServiceLocator::get<core::MovementSystem>().move(
-				world.getUnit(data.unitId), {data.targetX, data.targetY});
+			core::MovementSystem::getInstance().move(world.getUnit(data.unitId), {data.targetX, data.targetY});
 		};
 	}
 }

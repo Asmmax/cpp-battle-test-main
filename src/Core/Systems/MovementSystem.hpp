@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Infra/Singleton.hpp"
 #include "Core/World/Position.hpp"
 
 #include <unordered_map>
@@ -10,7 +11,7 @@ namespace sw::core
 	class Unit;
 	class World;
 
-	class MovementSystem
+	class MovementSystem : public Singleton<MovementSystem>
 	{
 	private:
 		std::unordered_map<uint32_t, Position> _targets{};

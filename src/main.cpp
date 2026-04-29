@@ -1,8 +1,4 @@
 #include <Core/Infra/EventBus.hpp>
-#include <Core/Infra/ServiceLocator.hpp>
-#include <Core/Systems/MovementSystem.hpp>
-#include <Core/Systems/RandomGenerator.hpp>
-#include <Core/Systems/SpatialSystem.hpp>
 #include <Core/World/World.hpp>
 #include <Features/Commands/CreateMap.hpp>
 #include <Features/Commands/March.hpp>
@@ -54,10 +50,6 @@ int main(int argc, char** argv)
 	}
 
 	core::World world;
-
-	core::ServiceLocator::set(std::make_unique<core::SpatialSystem>());
-	core::ServiceLocator::set(std::make_unique<core::MovementSystem>());
-	core::ServiceLocator::set(std::make_unique<core::RandomGenerator>());
 
 	std::cout << "Commands:\n";
 	io::CommandParser parser;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AContextActionNode.hpp"
-#include "Core/Infra/ServiceLocator.hpp"
 #include "Core/Systems/RandomGenerator.hpp"
 
 #include <memory>
@@ -20,7 +19,7 @@ namespace sw::core
 				return false;
 			}
 
-			uint32_t idx = ServiceLocator::get<RandomGenerator>().choose<TElement>(ctx);
+			uint32_t idx = RandomGenerator::getInstance().choose<TElement>(ctx);
 			const auto& target = ctx[idx];
 			ctx = std::vector<TElement>{target};
 			return true;

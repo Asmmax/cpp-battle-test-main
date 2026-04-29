@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Infra/Singleton.hpp"
+
 #include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
@@ -11,7 +13,7 @@ namespace sw::core
 	class Unit;
 	class World;
 
-	class SpatialSystem
+	class SpatialSystem : public Singleton<SpatialSystem>
 	{
 	private:
 		std::unordered_map<uint32_t, uint32_t> _distOffset{};

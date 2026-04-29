@@ -1,6 +1,5 @@
 #include "StatConsistFilterAction.hpp"
 
-#include "Core/Infra/ServiceLocator.hpp"
 #include "Core/World/Unit.hpp"
 #include "Core/World/World.hpp"
 

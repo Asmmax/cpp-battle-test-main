@@ -1,18 +1,17 @@
 #include "SpawnHunter.hpp"
 
 #include <Core/Actions/ActionSelector.hpp>
-#include <Core/Actions/UnitQueryAction.hpp>
-#include <Core/Actions/StatConsistFilterAction.hpp>
-#include <Core/Actions/RandomFilterAction.hpp>
-#include <Core/Actions/HitAction.hpp>
 #include <Core/Actions/ContextActionSequence.hpp>
+#include <Core/Actions/HitAction.hpp>
 #include <Core/Actions/MoveAction.hpp>
+#include <Core/Actions/RandomFilterAction.hpp>
+#include <Core/Actions/StatConsistFilterAction.hpp>
+#include <Core/Actions/UnitQueryAction.hpp>
 #include <Core/Providers/ConstStatProvider.hpp>
 #include <Core/Providers/UnitStatProvider.hpp>
 #include <Core/Systems/MovementSystem.hpp>
 #include <Core/World/Unit.hpp>
 #include <Core/World/World.hpp>
-#include <Core/Infra/ServiceLocator.hpp>
 
 namespace sw::features
 {
@@ -57,7 +56,7 @@ namespace sw::features
 		return [unit](core::World& world)
 		{
 			world.addUnit(unit);
-			core::ServiceLocator::get<core::MovementSystem>().setOccupying(unit);
+			core::MovementSystem::getInstance().setOccupying(unit);
 		};
 	}
 }

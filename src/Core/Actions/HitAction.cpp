@@ -1,7 +1,6 @@
 #include "HitAction.hpp"
 
 #include "Core/Infra/EventBus.hpp"
-#include "Core/Infra/ServiceLocator.hpp"
 #include "Core/Providers/IStatProvider.hpp"
 #include "Core/Systems/RandomGenerator.hpp"
 #include "Core/Systems/SpatialSystem.hpp"

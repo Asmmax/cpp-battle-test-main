@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Infra/Singleton.hpp"
+
 #include <random>
 #include <vector>
 
 namespace sw::core
 {
-	class RandomGenerator
+	class RandomGenerator : public Singleton<RandomGenerator>
 	{
 	private:
 		uint32_t _seed{};
