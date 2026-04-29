@@ -34,7 +34,7 @@ namespace sw::features
 				std::make_unique<core::UnitQueryAction>(
 					std::make_unique<core::ConstStatProvider>(1), std::make_unique<core::ConstStatProvider>(1), false),
 				std::make_unique<core::StatConsistFilterAction>("Health"),
-				std::make_unique<core::RandomFilterAction>(),
+				std::make_unique<core::RandomFilterAction<uint32_t>>(),
 				std::make_unique<core::HitAction>(
 					"CRUSHING_BLOW",
 					std::make_unique<core::UnitStatProvider>("Health"),

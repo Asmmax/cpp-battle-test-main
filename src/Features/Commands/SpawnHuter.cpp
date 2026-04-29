@@ -36,7 +36,7 @@ namespace sw::features
 				std::make_unique<core::UnitQueryAction>(
 					std::make_unique<core::ConstStatProvider>(1), std::make_unique<core::ConstStatProvider>(1), false),
 				std::make_unique<core::StatConsistFilterAction>("Health"),
-				std::make_unique<core::RandomFilterAction>(),
+				std::make_unique<core::RandomFilterAction<uint32_t>>(),
 				std::make_unique<core::HitAction>(
 					"SHADOW_STRIKE",
 					std::make_unique<core::UnitStatProvider>("Health"),
@@ -47,7 +47,7 @@ namespace sw::features
 					std::make_unique<core::UnitStatProvider>("Range"),
 					true),
 				std::make_unique<core::StatConsistFilterAction>("Health"),
-				std::make_unique<core::RandomFilterAction>(),
+				std::make_unique<core::RandomFilterAction<uint32_t>>(),
 				std::make_unique<core::HitAction>(
 					"RAPID_SHOT",
 					std::make_unique<core::UnitStatProvider>("Health"),
