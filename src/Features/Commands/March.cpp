@@ -1,15 +1,16 @@
 #include "March.hpp"
 
-#include <Core/Systems/MovementSystem.hpp>
+#include "Features/Systems/MovementSystem.hpp"
+
 #include <Core/World/World.hpp>
 
 namespace sw::features
 {
-	std::function<void(core::World&)> createCommand(const io::March& data)
+	std::function<void(core::World&)> createCommand(const March& data)
 	{
 		return [data = data](core::World& world)
 		{
-			core::MovementSystem::getInstance().move(world.getUnit(data.unitId), {data.targetX, data.targetY});
+			MovementSystem::getInstance().move(world.getUnit(data.unitId), {data.targetX, data.targetY});
 		};
 	}
 }

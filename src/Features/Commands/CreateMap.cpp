@@ -4,7 +4,7 @@
 
 namespace sw::features
 {
-	std::function<void(core::World&)> createCommand(const io::CreateMap& data)
+	std::function<void(core::World&)> createCommand(const CreateMap& data)
 	{
 		return [data = data](core::World& world)
 		{

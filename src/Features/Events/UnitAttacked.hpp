@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace sw::core
+namespace sw::features
 {
 	struct UnitAttacked
 	{

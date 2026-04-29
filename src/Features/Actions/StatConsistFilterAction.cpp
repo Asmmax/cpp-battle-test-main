@@ -1,21 +1,21 @@
 #include "StatConsistFilterAction.hpp"
 
-#include "Core/World/Unit.hpp"
-#include "Core/World/World.hpp"
+#include <Core/World/Unit.hpp>
+#include <Core/World/World.hpp>
 
-namespace sw::core
+namespace sw::features
 {
 	StatConsistFilterAction::StatConsistFilterAction(std::string statName) :
 			_statName(std::move(statName))
 	{}
 
-	bool StatConsistFilterAction::execute(Unit& self, World& world, std::vector<uint32_t>& ctx)
+	bool StatConsistFilterAction::execute(core::Unit& self, core::World& world, std::vector<uint32_t>& ctx)
 	{
 		std::vector<uint32_t> result;
 
 		for (auto unitId : ctx)
 		{
-			Unit* unit = world.tryGetUnit(unitId);
+			core::Unit* unit = world.tryGetUnit(unitId);
 			if (!unit)
 			{
 				continue;

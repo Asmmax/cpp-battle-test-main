@@ -1,16 +1,17 @@
 #include "SpatialSystem.hpp"
 
-#include "Core/World/Unit.hpp"
-#include "Core/World/World.hpp"
+#include <Core/World/Unit.hpp>
+#include <Core/World/World.hpp>
 
-namespace sw::core
+namespace sw::features
 {
-	std::vector<uint32_t> SpatialSystem::findUnitsInPoint(World& world, const Position& point, bool withFlying)
+	std::vector<uint32_t> SpatialSystem::findUnitsInPoint(
+		core::World& world, const core::Position& point, bool withFlying)
 	{
 		std::vector<uint32_t> result;
 
 		world.foreachUnit(
-			[&result, point, withFlying, this](const Unit& unit)
+			[&result, point, withFlying, this](const core::Unit& unit)
 			{
 				if (unit.pos != point)
 				{
@@ -32,11 +33,11 @@ namespace sw::core
 	}
 
 	std::vector<uint32_t> SpatialSystem::findUnitsInRange(
-		World& world, const Position& origin, uint32_t minDist, uint32_t maxDist, bool withFlying)
+		core::World& world, const core::Position& origin, uint32_t minDist, uint32_t maxDist, bool withFlying)
 	{
 		std::vector<uint32_t> result;
 
-		Bound* map = world.getMap();
+		core::Bound* map = world.getMap();
 		if (!map || minDist > maxDist)
 		{
 			return result;
@@ -50,7 +51,7 @@ namespace sw::core
 		{
 			for (int dy = -range; dy <= range; dy++)
 			{
-				Position pos{origin.x + dx, origin.y + dy};
+				core::Position pos{origin.x + dx, origin.y + dy};
 
 				if (!map->IsInside(pos))
 				{
@@ -97,7 +98,8 @@ namespace sw::core
 		_distOffset.insert({unitId, offset});
 	}
 
-	uint32_t SpatialSystem::distanceTo(uint32_t unitId, const Position& unitPos, const Position& origin) const
+	uint32_t SpatialSystem::distanceTo(
+		uint32_t unitId, const core::Position& unitPos, const core::Position& origin) const
 	{
 		const int dx = static_cast<int>(unitPos.x) - static_cast<int>(origin.x);
 		const int dy = static_cast<int>(unitPos.y) - static_cast<int>(origin.y);

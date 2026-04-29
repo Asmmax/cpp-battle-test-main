@@ -1,15 +1,15 @@
 #include "MovementSystem.hpp"
 
-#include "Core/Infra/EventBus.hpp"
-#include "Core/World/Unit.hpp"
-#include "Core/World/World.hpp"
-#include "Core/Events/MarchEnded.hpp"
-#include "Core/Events/MarchStarted.hpp"
-#include "Core/Events/UnitMoved.hpp"
+#include <Core/Infra/EventBus.hpp>
+#include <Core/World/Unit.hpp>
+#include <Core/World/World.hpp>
+#include "Features/Events/MarchEnded.hpp"
+#include "Features/Events/MarchStarted.hpp"
+#include "Features/Events/UnitMoved.hpp"
 
 #include <algorithm>
 
-namespace sw::core
+namespace sw::features
 {
 	static int stepToward(int from, int to)
 	{
@@ -24,12 +24,12 @@ namespace sw::core
 		return 0;
 	}
 
-	Position MovementSystem::nextStep(const Position& from, const Position& to) const
+	core::Position MovementSystem::nextStep(const core::Position& from, const core::Position& to) const
 	{
 		return {from.x + stepToward(from.x, to.x), from.y + stepToward(from.y, to.y)};
 	}
 
-	bool MovementSystem::advance(Unit& unit, World& world)
+	bool MovementSystem::advance(core::Unit& unit, core::World& world)
 	{
 		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
@@ -37,7 +37,7 @@ namespace sw::core
 			return false;
 		}
 
-		const Position& target = it->second;
+		const core::Position& target = it->second;
 
 		if (unit.pos == target)
 		{
@@ -45,13 +45,13 @@ namespace sw::core
 			return false;
 		}
 
-		const Position next = nextStep(unit.pos, target);
+		const core::Position next = nextStep(unit.pos, target);
 
 		const bool canMove = !isBlocked(next, world);
 		if (canMove)
 		{
 			unit.pos = next;
-			EventBus::publish<UnitMoved>({unit.unitId, next.x, next.y});
+			core::EventBus::publish<UnitMoved>({unit.unitId, next.x, next.y});
 		}
 
 		if (unit.pos == target)
@@ -61,13 +61,13 @@ namespace sw::core
 		return canMove;
 	}
 
-	void MovementSystem::move(const Unit& unit, const Position& target)
+	void MovementSystem::move(const core::Unit& unit, const core::Position& target)
 	{
 		_targets[unit.unitId] = target;
-		EventBus::publish<MarchStarted>({unit.unitId, unit.pos.x, unit.pos.y, target.x, target.y});
+		core::EventBus::publish<MarchStarted>({unit.unitId, unit.pos.x, unit.pos.y, target.x, target.y});
 	}
 
-	void MovementSystem::finishMove(Unit& unit)
+	void MovementSystem::finishMove(core::Unit& unit)
 	{
 		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
@@ -77,10 +77,10 @@ namespace sw::core
 
 		_targets.erase(it);
 
-		EventBus::publish<MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
+		core::EventBus::publish<MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
 	}
 
-	bool MovementSystem::canMove(const Unit& unit, World& world)
+	bool MovementSystem::canMove(const core::Unit& unit, core::World& world)
 	{
 		const auto it = _targets.find(unit.unitId);
 		if (it == _targets.end())
@@ -88,7 +88,7 @@ namespace sw::core
 			return false;
 		}
 
-		const Position& target = it->second;
+		const core::Position& target = it->second;
 
 		if (unit.pos == target)
 		{
@@ -98,15 +98,15 @@ namespace sw::core
 		return !isBlocked(nextStep(unit.pos, target), world);
 	}
 
-	void MovementSystem::setOccupying(const Unit& unit)
+	void MovementSystem::setOccupying(const core::Unit& unit)
 	{
 		_occupyingUnits.insert(unit.unitId);
 	}
 
-	bool MovementSystem::isBlocked(const Position& pos, World& world) const
+	bool MovementSystem::isBlocked(const core::Position& pos, core::World& world) const
 	{
 		return !world.foreachUnit(
-			[pos, this](const Unit& unit)
+			[pos, this](const core::Unit& unit)
 			{
 				if (unit.pos != pos)
 				{

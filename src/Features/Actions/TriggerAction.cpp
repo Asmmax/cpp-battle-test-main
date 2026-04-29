@@ -1,12 +1,12 @@
 #include "TriggerAction.hpp"
 
-namespace sw::core
+namespace sw::features
 {
-	TriggerAction::TriggerAction(std::unique_ptr<IActionNode> next) :
+	TriggerAction::TriggerAction(std::unique_ptr<core::IActionNode> next) :
 			_next(std::move(next))
 	{}
 
-	bool TriggerAction::execute(Unit& self, World& world)
+	bool TriggerAction::execute(core::Unit& self, core::World& world)
 	{
 		if (_state)
 		{

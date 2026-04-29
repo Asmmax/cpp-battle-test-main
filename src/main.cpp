@@ -1,9 +1,5 @@
 #include <Core/Events/MapCreated.hpp>
-#include <Core/Events/MarchEnded.hpp>
-#include <Core/Events/MarchStarted.hpp>
-#include <Core/Events/UnitAttacked.hpp>
 #include <Core/Events/UnitDied.hpp>
-#include <Core/Events/UnitMoved.hpp>
 #include <Core/Events/UnitSpawned.hpp>
 #include <Core/Infra/EventBus.hpp>
 #include <Core/World/Simulation.hpp>
@@ -12,10 +8,10 @@
 #include <Features/Commands/March.hpp>
 #include <Features/Commands/SpawnHunter.hpp>
 #include <Features/Commands/SpawnSwordsman.hpp>
-#include <IO/Commands/CreateMap.hpp>
-#include <IO/Commands/March.hpp>
-#include <IO/Commands/SpawnHunter.hpp>
-#include <IO/Commands/SpawnSwordsman.hpp>
+#include <Features/Events/MarchEnded.hpp>
+#include <Features/Events/MarchStarted.hpp>
+#include <Features/Events/UnitAttacked.hpp>
+#include <Features/Events/UnitMoved.hpp>
 #include <IO/System/CommandParser.hpp>
 #include <IO/System/EventLog.hpp>
 #include <IO/System/PrintDebug.hpp>
@@ -55,22 +51,22 @@ int main(int argc, char** argv)
 
 	std::cout << "Commands:\n";
 	io::CommandParser parser;
-	parser.add<io::CreateMap>([&sim](auto command) { registerCommand(sim, command); })
-		.add<io::SpawnSwordsman>([&sim](auto command) { registerCommand(sim, command); })
-		.add<io::SpawnHunter>([&sim](auto command) { registerCommand(sim, command); })
-		.add<io::March>([&sim](auto command) { registerCommand(sim, command); });
+	parser.add<features::CreateMap>([&sim](auto command) { registerCommand(sim, command); })
+		.add<features::SpawnSwordsman>([&sim](auto command) { registerCommand(sim, command); })
+		.add<features::SpawnHunter>([&sim](auto command) { registerCommand(sim, command); })
+		.add<features::March>([&sim](auto command) { registerCommand(sim, command); });
 
 	parser.parse(file);
 
 	std::cout << "\n\nEvents:\n";
 
 	core::EventBus::subscribe<core::MapCreated>([&sim](auto eventData) { registerEvent(sim, eventData); });
-	core::EventBus::subscribe<core::MarchEnded>([&sim](auto eventData) { registerEvent(sim, eventData); });
-	core::EventBus::subscribe<core::MarchStarted>([&sim](auto eventData) { registerEvent(sim, eventData); });
-	core::EventBus::subscribe<core::UnitDied>([&sim](auto eventData) { registerEvent(sim, eventData); });
-	core::EventBus::subscribe<core::UnitMoved>([&sim](auto eventData) { registerEvent(sim, eventData); });
-	core::EventBus::subscribe<core::UnitAttacked>([&sim](auto eventData) { registerEvent(sim, eventData); });
 	core::EventBus::subscribe<core::UnitSpawned>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<core::UnitDied>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<features::MarchEnded>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<features::MarchStarted>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<features::UnitMoved>([&sim](auto eventData) { registerEvent(sim, eventData); });
+	core::EventBus::subscribe<features::UnitAttacked>([&sim](auto eventData) { registerEvent(sim, eventData); });
 
 	sim.run(world);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <IO/Commands/CreateMap.hpp>
 #include <functional>
 
 namespace sw::core
@@ -10,5 +9,20 @@ namespace sw::core
 
 namespace sw::features
 {
-	std::function<void(core::World&)> createCommand(const io::CreateMap& data);
+	struct CreateMap
+	{
+		constexpr static const char* Name = "CREATE_MAP";
+
+		uint32_t width{};
+		uint32_t height{};
+
+		template <typename Visitor>
+		void visit(Visitor& visitor)
+		{
+			visitor.visit("width", width);
+			visitor.visit("height", height);
+		}
+	};
+
+	std::function<void(core::World&)> createCommand(const CreateMap& data);
 }
