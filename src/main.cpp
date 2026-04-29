@@ -1,3 +1,10 @@
+#include <Core/Events/MapCreated.hpp>
+#include <Core/Events/MarchEnded.hpp>
+#include <Core/Events/MarchStarted.hpp>
+#include <Core/Events/UnitAttacked.hpp>
+#include <Core/Events/UnitDied.hpp>
+#include <Core/Events/UnitMoved.hpp>
+#include <Core/Events/UnitSpawned.hpp>
 #include <Core/Infra/EventBus.hpp>
 #include <Core/World/World.hpp>
 #include <Features/Commands/CreateMap.hpp>
@@ -8,13 +15,6 @@
 #include <IO/Commands/March.hpp>
 #include <IO/Commands/SpawnHunter.hpp>
 #include <IO/Commands/SpawnSwordsman.hpp>
-#include <IO/Events/MapCreated.hpp>
-#include <IO/Events/MarchEnded.hpp>
-#include <IO/Events/MarchStarted.hpp>
-#include <IO/Events/UnitAttacked.hpp>
-#include <IO/Events/UnitDied.hpp>
-#include <IO/Events/UnitMoved.hpp>
-#include <IO/Events/UnitSpawned.hpp>
 #include <IO/System/CommandParser.hpp>
 #include <IO/System/EventLog.hpp>
 #include <IO/System/PrintDebug.hpp>
@@ -62,13 +62,13 @@ int main(int argc, char** argv)
 
 	std::cout << "\n\nEvents:\n";
 
-	core::EventBus::subscribe<io::MapCreated>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<io::MarchEnded>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<io::MarchStarted>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<io::UnitAttacked>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<io::UnitDied>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<io::UnitMoved>([&world](auto eventData) { registerEvent(world, eventData); });
-	core::EventBus::subscribe<io::UnitSpawned>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::MapCreated>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::MarchEnded>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::MarchStarted>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::UnitDied>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::UnitMoved>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::UnitAttacked>([&world](auto eventData) { registerEvent(world, eventData); });
+	core::EventBus::subscribe<core::UnitSpawned>([&world](auto eventData) { registerEvent(world, eventData); });
 
 	world.run();
 

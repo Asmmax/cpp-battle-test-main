@@ -6,7 +6,7 @@
 #include "Core/Systems/SpatialSystem.hpp"
 #include "Core/World/Unit.hpp"
 #include "Core/World/World.hpp"
-#include "IO/Events/UnitAttacked.hpp"
+#include "Core/Events/UnitAttacked.hpp"
 
 namespace sw::core
 {
@@ -41,7 +41,7 @@ namespace sw::core
 		health = (damage >= health) ? 0 : health - damage;
 		_health->set(target, health);
 
-		EventBus::publish<sw::io::UnitAttacked>({attacker.unitId, target.unitId, damage, health});
+		EventBus::publish<UnitAttacked>({attacker.unitId, target.unitId, damage, health});
 		if (health == 0)
 		{
 			world.removeUnit(target.unitId);

@@ -2,9 +2,9 @@
 
 #include "Core/Actions/IActionNode.hpp"
 #include "Core/Infra/EventBus.hpp"
-#include "IO/Events/MapCreated.hpp"
-#include "IO/Events/UnitDied.hpp"
-#include "IO/Events/UnitSpawned.hpp"
+#include "Core/Events/MapCreated.hpp"
+#include "Core/Events/UnitDied.hpp"
+#include "Core/Events/UnitSpawned.hpp"
 
 #include <algorithm>
 #include <assert.h>
@@ -14,7 +14,7 @@ namespace sw::core
 	void World::createMap(uint32_t width, uint32_t height)
 	{
 		_map.emplace(width, height);
-		EventBus::publish<sw::io::MapCreated>({width, height});
+		EventBus::publish<MapCreated>({width, height});
 	}
 
 	Bound* World::getMap()
@@ -91,7 +91,7 @@ namespace sw::core
 		if (_map->IsInside(unit.pos))
 		{
 			_units.push_back(unit);
-			EventBus::publish<sw::io::UnitSpawned>({unit.unitId, unit.unitType, unit.pos.x, unit.pos.y});
+			EventBus::publish<UnitSpawned>({unit.unitId, unit.unitType, unit.pos.x, unit.pos.y});
 		}
 	}
 
@@ -128,6 +128,6 @@ namespace sw::core
 	void World::removeUnit(uint32_t id)
 	{
 		_pendingDeleteUnits.push_back(id);
-		EventBus::publish<sw::io::UnitDied>({id});
+		EventBus::publish<UnitDied>({id});
 	}
 }

@@ -1,16 +1,14 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 
-namespace sw::io
+namespace sw::core
 {
-	struct UnitSpawned
+	struct MarchEnded
 	{
-		constexpr static const char* Name = "UNIT_SPAWNED";
+		constexpr static const char* Name = "MARCH_ENDED";
 
 		uint32_t unitId{};
-		std::string unitType{};
 		uint32_t x{};
 		uint32_t y{};
 
@@ -18,7 +16,6 @@ namespace sw::io
 		void visit(Visitor& visitor)
 		{
 			visitor.visit("unitId", unitId);
-			visitor.visit("unitType", unitType);
 			visitor.visit("x", x);
 			visitor.visit("y", y);
 		}

@@ -3,9 +3,9 @@
 #include "Core/Infra/EventBus.hpp"
 #include "Core/World/Unit.hpp"
 #include "Core/World/World.hpp"
-#include "IO/Events/MarchEnded.hpp"
-#include "IO/Events/MarchStarted.hpp"
-#include "IO/Events/UnitMoved.hpp"
+#include "Core/Events/MarchEnded.hpp"
+#include "Core/Events/MarchStarted.hpp"
+#include "Core/Events/UnitMoved.hpp"
 
 #include <algorithm>
 
@@ -51,7 +51,7 @@ namespace sw::core
 		if (canMove)
 		{
 			unit.pos = next;
-			EventBus::publish<sw::io::UnitMoved>({unit.unitId, next.x, next.y});
+			EventBus::publish<UnitMoved>({unit.unitId, next.x, next.y});
 		}
 
 		if (unit.pos == target)
@@ -64,7 +64,7 @@ namespace sw::core
 	void MovementSystem::move(const Unit& unit, const Position& target)
 	{
 		_targets[unit.unitId] = target;
-		EventBus::publish<sw::io::MarchStarted>({unit.unitId, unit.pos.x, unit.pos.y, target.x, target.y});
+		EventBus::publish<MarchStarted>({unit.unitId, unit.pos.x, unit.pos.y, target.x, target.y});
 	}
 
 	void MovementSystem::finishMove(Unit& unit)
@@ -77,7 +77,7 @@ namespace sw::core
 
 		_targets.erase(it);
 
-		EventBus::publish<sw::io::MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
+		EventBus::publish<MarchEnded>({unit.unitId, unit.pos.x, unit.pos.y});
 	}
 
 	bool MovementSystem::canMove(const Unit& unit, World& world)
