@@ -4,10 +4,10 @@
 #include <Core/Infra/EventBus.hpp>
 #include <Core/World/Simulation.hpp>
 #include <Core/World/World.hpp>
-#include <Features/Commands/CreateMap.hpp>
-#include <Features/Commands/March.hpp>
-#include <Features/Commands/SpawnHunter.hpp>
-#include <Features/Commands/SpawnSwordsman.hpp>
+#include <Impl/Commands/CreateMap.hpp>
+#include <Impl/Commands/March.hpp>
+#include <Impl/Commands/SpawnHunter.hpp>
+#include <Impl/Commands/SpawnSwordsman.hpp>
 #include <Features/Events/MarchEnded.hpp>
 #include <Features/Events/MarchStarted.hpp>
 #include <Features/Events/UnitAttacked.hpp>
@@ -24,7 +24,7 @@ template <typename TCommand>
 void registerCommand(core::Simulation& sim, TCommand& command)
 {
 	printDebug(std::cout, command);
-	sim.scheduleCommand(features::createCommand(command));
+	sim.scheduleCommand(sw::createCommand(command));
 }
 
 template <typename TEvent>
@@ -51,10 +51,10 @@ int main(int argc, char** argv)
 
 	std::cout << "Commands:\n";
 	io::CommandParser parser;
-	parser.add<features::CreateMap>([&sim](auto command) { registerCommand(sim, command); })
-		.add<features::SpawnSwordsman>([&sim](auto command) { registerCommand(sim, command); })
-		.add<features::SpawnHunter>([&sim](auto command) { registerCommand(sim, command); })
-		.add<features::March>([&sim](auto command) { registerCommand(sim, command); });
+	parser.add<io::CreateMap>([&sim](auto command) { registerCommand(sim, command); })
+		.add<io::SpawnSwordsman>([&sim](auto command) { registerCommand(sim, command); })
+		.add<io::SpawnHunter>([&sim](auto command) { registerCommand(sim, command); })
+		.add<io::March>([&sim](auto command) { registerCommand(sim, command); });
 
 	parser.parse(file);
 

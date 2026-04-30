@@ -2,9 +2,9 @@
 
 #include <Core/World/World.hpp>
 
-namespace sw::features
+namespace sw
 {
-	std::function<void(core::World&)> createCommand(const CreateMap& data)
+	std::function<void(core::World&)> createCommand(const io::CreateMap& data)
 	{
 		return [data = data](core::World& world)
 		{

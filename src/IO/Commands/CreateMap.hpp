@@ -1,14 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <functional>
 
-namespace sw::core
-{
-	class World;
-}
-
-namespace sw::features
+namespace sw::io
 {
 	struct CreateMap
 	{
@@ -24,6 +18,4 @@ namespace sw::features
 			visitor.visit("height", height);
 		}
 	};
-
-	std::function<void(core::World&)> createCommand(const CreateMap& data);
 }

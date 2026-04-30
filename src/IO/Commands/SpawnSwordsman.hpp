@@ -1,14 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <functional>
 
-namespace sw::core
-{
-	class World;
-}
-
-namespace sw::features
+namespace sw::io
 {
 	struct SpawnSwordsman
 	{
@@ -30,6 +24,4 @@ namespace sw::features
 			visitor.visit("strength", strength);
 		}
 	};
-
-	std::function<void(core::World&)> createCommand(const SpawnSwordsman& data);
 }
